@@ -1,0 +1,237 @@
+html_content = '''<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BrightStead - Dog Tag Demo</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #FFFFFF;
+            color: #333333;
+        }
+        #banner {
+            background-color: #000000;
+            color: #FFFFFF;
+            text-align: center;
+            padding: 2em;
+            font-size: 2em;
+            font-weight: bold;
+        }
+        .content {
+            background-color: #EAEAEA;
+            padding: 2em;
+            max-width: 800px;
+            margin: 2em auto;
+            border-radius: 8px;
+        }
+        .dog-info {
+            display: flex;
+            align-items: center;
+            gap: 1em;
+        }
+        .dog-info img {
+            max-width: 150px;
+            border-radius: 8px;
+        }
+        .dog-details {
+            flex: 1;
+        }
+        h1, h2, h3 {
+            color: #6DBE45;
+        }
+        a {
+            color: #F26B38;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .gallery {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1em;
+        }
+        .gallery a img {
+            width: 150px;
+            border-radius: 8px;
+            transition: transform 0.2s;
+        }
+        .gallery a img:hover {
+            transform: scale(1.05);
+        }
+        .call-button {
+            background-color: #6DBE45;
+            color: white;
+            padding: 0.5em 1em;
+            border: none;
+            border-radius: 6px;
+            font-size: 1em;
+            cursor: pointer;
+            margin-top: 1em;
+        }
+        .form-section {
+            background-color: #EAEAEA;
+            padding: 2em;
+            max-width: 600px;
+            margin: 2em auto;
+            border-radius: 8px;
+        }
+        .form-section input {
+            width: 100%;
+            padding: 0.5em;
+            margin-bottom: 1em;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+        .form-section button {
+            background-color: #6DBE45;
+            color: white;
+            padding: 0.5em 1em;
+            border: none;
+            border-radius: 6px;
+            font-size: 1em;
+            cursor: pointer;
+        }
+        footer {
+            text-align: center;
+            padding: 1em;
+            font-size: 0.9em;
+            background-color: #F26B38;
+            color: #FFFFFF;
+        }
+    </style>
+</head>
+<body>
+    <div id="banner">BrightStead</div>
+    <div id="dogContainer" class="content" style="display:none;">
+        <h2 id="dogTitle"></h2>
+        <div class="dog-info">
+            <img id="dogImage" src="" alt="Dog Image">
+            <div class="dog-details">
+                <p><strong>Name:</strong> <span id="dogName"></span></p>
+                <p><strong>Breed:</strong> <span id="dogBreed"></span></p>
+                <p><strong>Age:</strong> <span id="dogAge"></span></p>
+                <p><strong>Owner:</strong> <span id="dogOwner"></span></p>
+                <p><strong>Email:</strong> <span id="dogContact"></span></p>
+                <p><strong>Phone:</strong> <span id="dogPhone"></span></p>
+                <button class="call-button">Call the owner</button>
+            </div>
+        </div>
+    </div>
+    <div id="galleryContainer" class="content" style="display:none;">
+        <h2>Our Dogs</h2>
+        <div class="gallery" id="dogGallery"></div>
+    </div>
+    <div id="formContainer" class="form-section" style="display:none;">
+        <h2>Unknown Dog ID</h2>
+        <p>This dog ID is not in the database. Please add the dog details below:</p>
+        <form>
+            <input type="text" placeholder="Dog Name" required>
+            <input type="text" placeholder="Breed" required>
+            <input type="number" placeholder="Age" required>
+            <input type="text" placeholder="Owner Name" required>
+            <input type="email" placeholder="Owner Email" required>
+            <input type="tel" placeholder="Owner Phone" required>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+    <footer>
+        &copy; 2025 BrightStead
+    </footer>
+    <script>
+        const dogDatabase = {
+            "K1": {
+                name: "Barkley",
+                breed: "Golden Retriever",
+                age: "5",
+                owner: "Luna Spark",
+                contact: "luna.spark@example.com",
+                phone: "+358401234567",
+                image: "K1.png"
+            },
+            "K2": {
+                name: "Snickers",
+                breed: "Beagle",
+                age: "3",
+                owner: "Max Thunder",
+                contact: "max.thunder@example.com",
+                phone: "+358402345678",
+                image: "K2.png"
+            },
+            "K3": {
+                name: "Waffles",
+                breed: "Pomeranian",
+                age: "2",
+                owner: "Zoe Bubble",
+                contact: "zoe.bubble@example.com",
+                phone: "+358403456789",
+                image: "K3.png"
+            },
+            "K4": {
+                name: "Moose",
+                breed: "Great Dane",
+                age: "4",
+                owner: "Finn Rocket",
+                contact: "finn.rocket@example.com",
+                phone: "+358404567890",
+                image: "K4.png"
+            },
+            "K5": {
+                name: "Pickles",
+                breed: "Corgi",
+                age: "6",
+                owner: "Nina Whistle",
+                contact: "nina.whistle@example.com",
+                phone: "+358405678901",
+                image: "K5.png"
+            }
+        };
+
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+
+        function showDogGallery() {
+            document.getElementById("galleryContainer").style.display = "block";
+            const gallery = document.getElementById("dogGallery");
+            for (const id in dogDatabase) {
+                const dog = dogDatabase[id];
+                const link = document.createElement("a");
+                link.href = "?id=" + id;
+                const img = document.createElement("img");
+                img.src = dog.image;
+                img.alt = dog.name;
+                link.appendChild(img);
+                gallery.appendChild(link);
+            }
+        }
+
+        window.onload = function() {
+            const id = getQueryParam("id");
+            if (id) {
+                if (dogDatabase[id]) {
+                    const dog = dogDatabase[id];
+                    document.getElementById("dogTitle").textContent = `Hi I am ${dog.name} and I have perhaps lost my owner`;
+                    document.getElementById("dogImage").src = dog.image;
+                    document.getElementById("dogName").textContent = dog.name;
+                    document.getElementById("dogBreed").textContent = dog.breed;
+                    document.getElementById("dogAge").textContent = dog.age;
+                    document.getElementById("dogOwner").textContent = dog.owner;
+                    document.getElementById("dogContact").textContent = dog.contact;
+                    document.getElementById("dogPhone").textContent = dog.phone;
+                    document.getElementById("dogContainer").style.display = "block";
+                } else {
+                    document.getElementById("formContainer").style.display = "block";
+                }
+            } else {
+                showDogGallery();
+            }
+        };
+    </script>
+</body>
+</html>
+'''
